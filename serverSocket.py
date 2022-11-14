@@ -24,32 +24,43 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
 
-clientes_conectados = {}
+nomes_clientes = {}
+clientes_conectados = []
+
 
 
 
 
 ####    Funções utilizadas durante o programa!    ####
+def mensagem_global(mensagem):
+    mensagem = mensagem.encode(FORMAT)
+    for cliente in clientes_conectados:
+        cliente.send(mensagem)
+
 def handle_client(conn, addr):
     print(f'[Nova conexão] {addr} conectou-se!')
 
     nickname = setarNickname(conn, addr)
+    mensagem_conexao = f'[Sevidor] {nickname} se conectou! Seja bem-vindo!'
+    mensagem_global(mensagem_conexao)
 
     connected = True
     while connected:
             msg = conn.recv(HEADER).decode(FORMAT)
             if msg == DISCONNECT_MESSAGE: #Caso o usuário digite '!DISCONNECT' no chat, a conexão será finalizada.
                 connected = False
-            print(f'[{nickname}] {msg}')
-    print(f'***   {nickname} DESCONECTOU-SE!   ***')
+            mensagem_cliente = f'[{nickname}] {msg}'
+            mensagem_global(mensagem_cliente)
+    mensagem_desconectado = f'***   {nickname} DESCONECTOU-SE!   ***'
+    mensagem_global(mensagem_desconectado)
     return conn.close()
 
 
 def setarNickname(conn, addr):
         msg = conn.recv(HEADER).decode(FORMAT)
-        clientes_conectados[addr] = msg #Salvando em um dicionário o nome escolhido, para que, por meio do IP e PORTA o usuário possa ser identificado.
+        nomes_clientes[addr] = msg #Salvando em um dicionário o nome escolhido, para que, por meio do IP e PORTA o usuário possa ser identificado.
         print(f'\nO usuário {addr} está como: [{msg}]\n')
-        return clientes_conectados[addr]
+        return nomes_clientes[addr]
 
 
 def startServer():
@@ -57,6 +68,7 @@ def startServer():
     print(f"[Server está esperando conexões em {SERVER}]")
     while True:
         conn, addr = server.accept()
+        clientes_conectados.append(conn) #Adicionar na Lista de clientes conectados no momento (usado para mandas as mensagens globais)!
         thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
         print(f"[Conexões Ativas] {threading.active_count() - 1}")
