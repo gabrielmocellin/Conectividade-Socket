@@ -37,24 +37,16 @@ def handle_client(conn, addr):
 
     connected = True
     while connected:
-        msg_lenght = conn.recv(HEADER).decode(FORMAT)
-        if msg_lenght: #Verificar se há conteúdo na variável 'msg_lenght'.
-            msg_lenght = int(msg_lenght)
-            msg = conn.recv(msg_lenght).decode(FORMAT)
+            msg = conn.recv(HEADER).decode(FORMAT)
             if msg == DISCONNECT_MESSAGE: #Caso o usuário digite '!DISCONNECT' no chat, a conexão será finalizada.
                 connected = False
             print(f'[{nickname}] {msg}')
     print(f'***   {nickname} DESCONECTOU-SE!   ***')
-    #data = b'Alguem se desconectou'
-    #conn.sendall(data)
     return conn.close()
 
 
 def setarNickname(conn, addr):
-    msg_lenght = conn.recv(HEADER).decode(FORMAT)
-    if msg_lenght: #Verificar se há conteúdo na variável 'msg_lenght'.
-        msg_lenght = int(msg_lenght)
-        msg = conn.recv(msg_lenght).decode(FORMAT)
+        msg = conn.recv(HEADER).decode(FORMAT)
         clientes_conectados[addr] = msg #Salvando em um dicionário o nome escolhido, para que, por meio do IP e PORTA o usuário possa ser identificado.
         print(f'\nO usuário {addr} está como: [{msg}]\n')
         return clientes_conectados[addr]
@@ -68,7 +60,6 @@ def startServer():
         thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
         print(f"[Conexões Ativas] {threading.active_count() - 1}")
-
 
 
 def menuSocket():

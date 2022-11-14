@@ -11,8 +11,11 @@ DISCONNECT_MESSAGE = "!disc"
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(ADDR)
+try:
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect(ADDR)
+except:
+    print('\n\n\n[Conexão falhou!] Revise o IP e a PORTA e tente novamente...')
 
 
 
@@ -30,17 +33,13 @@ client.connect(ADDR)
 ####    Funções utilizadas durante o programa!    ####
 def enviar(msg):
     mensagem = msg.encode(FORMAT)
-    msg_lenght = len(mensagem)
-    enviar_lenght = str(msg_lenght).encode(FORMAT)
-    enviar_lenght += b' ' * (HEADER - len(enviar_lenght))
-    client.send(enviar_lenght)
-    client.send(mensagem)
+    return client.send(mensagem)
 
 
 def definir_nickname():
     print('Qual será seu apelido no chat?\n')
     nickname = str(input('-> '))
-    enviar(nickname)
+    return enviar(nickname)
 
 
 def cliente():
@@ -50,9 +49,6 @@ def cliente():
     print('**Caso queira desconectar, digite: !disc**\n\n\n')
     while True:
         mensagem_cliente = str(input('> '))
-        # data = client.recv(1024)
-        #if(data):
-        #    print(data)
         if(mensagem_cliente == '!disc'):
             return enviar(mensagem_cliente)
             break
