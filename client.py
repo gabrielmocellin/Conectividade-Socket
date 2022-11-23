@@ -11,10 +11,10 @@ import threading
 
 #Códigos 7-12 explicados no código (serverSocket.py)
 HEADER = 64
-PORT = 5050
+PORT = 9999
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!disc"
-SERVER = socket.gethostbyname(socket.gethostname())
+SERVER = "26.28.22.163"
 ADDR = (SERVER, PORT)
 
 
@@ -25,8 +25,7 @@ def enviar():
         mensagem_cliente = str(input(''))
         if(mensagem_cliente == '!disc'):
             mensagem = mensagem_cliente.encode(FORMAT) # Codificação da mensagem enviada.
-            thread1.killed = True
-            thread2.killed = True
+
             return client.send(mensagem)
         else:
             mensagem = mensagem_cliente.encode(FORMAT)
@@ -54,12 +53,6 @@ def cliente():
 
     thread1.start()
     thread2.start()
-
-
-def receber():
-    while True:
-        data = client.recv(HEADER).decode(FORMAT)
-        print(data)
 
 
 

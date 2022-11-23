@@ -6,14 +6,13 @@ import socket
 import threading
 
 # Importando 'threading' para poder criar/usar vários clientes ao mesmo tempo.
-
 HEADER = 64 #Quantidade de bytes que serão enviadas/recebidas durante as conversas entre cliente e servidor.
 FORMAT = 'utf-8' #Formato usado para decodificação da mensagem do cliente.
 DISCONNECT_MESSAGE = "!disc"
 
 PORT = 5050
 ## SERVER = "cmd->ipconfig->IPV4" ***OU***
-SERVER = socket.gethostbyname(socket.gethostname())
+SERVER = "26.248.248.147"
 # Pega o IPV4 sozinho para utilizar no servidor.
 ### print(SERVER) Caso queira ver o IP sendo utilizado pelo servidor.
 ADDR = (SERVER, PORT)
@@ -49,6 +48,8 @@ def handle_client(conn, addr):
             msg = conn.recv(HEADER).decode(FORMAT)
             if msg == DISCONNECT_MESSAGE: #Caso o usuário digite '!DISCONNECT' no chat, a conexão será finalizada.
                 connected = False
+                usuarioSaiu = clientes_conectados.index(conn)
+                clientes_conectados.remove(clientes_conectados[usuarioSaiu])
             mensagem_cliente = f'[{nickname}] {msg}'
             mensagem_global(mensagem_cliente)
     mensagem_desconectado = f'***   {nickname} DESCONECTOU-SE!   ***'
