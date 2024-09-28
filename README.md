@@ -1,2 +1,2 @@
 # Conectividade-Socket
-Trabalho com socket para Conectividade de Sistemas Ciber-físicos
+Trabalho da faculdade onde transmitimos mensagem utilizando socket para Conectividade de Sistemas Ciber-físicos.
